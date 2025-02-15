@@ -10,7 +10,7 @@ class KYCRecord(Base):
     pan = Column(String, index=True, nullable=True)
     pan_status = Column(String, nullable=False)
     bank_account_number = Column(String, nullable=True)
-    ifsc = Column(String, nullable=True)
+    ifsc_code = Column(String, nullable=True)
     bank_status = Column(String, nullable=True)
     kyc_status = Column(String, nullable=False)
     pan_verification_failure_reason = Column(String, nullable=True)
