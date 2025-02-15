@@ -28,7 +28,7 @@ def update_kyc_stats(db: Session, attempted=0, successful=0, failed=0, failed_pa
     """Helper function to update KYC statistics."""
     stats = db.query(KYCStatistics).first()
     if not stats:
-        KYCStatistics(
+        statss =KYCStatistics(
             total_KYC_attempted=0,
             total_KYC_successful=0,
             total_KYC_failed=0,
@@ -36,9 +36,10 @@ def update_kyc_stats(db: Session, attempted=0, successful=0, failed=0, failed_pa
 
         )
 
-        db.add(KYCStatistics)
+        db.add(statss)
         db.commit()
-        db.refresh(stats)
+
+    stats = db.query(KYCStatistics).first()
     if not stats:
         stats = KYCStatistics()
         db.add(stats)
