@@ -3,3 +3,4 @@ uvicorn
 sqlalchemy
 requests
 alembic
+psycopg2
