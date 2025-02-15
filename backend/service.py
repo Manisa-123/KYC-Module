@@ -126,7 +126,7 @@ def make_mock_payment(requestId):
         "x-product-instance-id": "1a0eb164-1129-46ae-b397-433f1d9ab454"
     }
     SETU_RPD_URL=f'https://dg-sandbox.setu.co/api/verify/ban/reverse/mock_payment/{requestId}'
-    response = requests.post(SETU_RPD_URL, headers=HEADERS)
+    response = requests.post(SETU_RPD_URL, headers=headers)
     if response.status_code != 200:
         raise HTTPException(status_code=400, detail="Bank Verification Failed: Mock Payment Error")
 
@@ -139,7 +139,7 @@ def get_rpd_status(rpd_id):
     }
     SETU_GET_URL=f'https://dg-sandbox.setu.co/api/verify/ban/reverse/{rpd_id}'
 
-    response = requests.get(SETU_GET_URL, headers=HEADERS)
+    response = requests.get(SETU_GET_URL, headers=headers)
     if response.status_code != 200:
         raise HTTPException(status_code=400, detail="Bank Verification Failed: RPD Fetch Error")
     return response.json()
@@ -174,7 +174,7 @@ def verify_bank(pan_no: str, db: Session = Depends(get_db)):
         db.commit()
         raise HTTPException(status_code=400, detail="Please Verify PAN number first")
     SETU_API_URL = 'https://dg-sandbox.setu.co/api/verify/ban/reverse'
-    response = requests.post(SETU_API_URL, headers=HEADERS)
+    response = requests.post(SETU_API_URL, headers=headers)
     print(response)
     if response.status_code != 201:
         update_kyc_failure(stats, "BANK")

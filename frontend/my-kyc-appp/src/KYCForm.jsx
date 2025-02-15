@@ -51,22 +51,27 @@ const KYCForm = () => {
 
     // Bank Verification
     const verifyBank = async () => {
-        console.log("Bank Verification Clicked!");
-        try {
-            const response = await axios.post(
-                "http://localhost:8000/kyc/bank-account",
-                null,
-                {
-                    params: { pan_no: pan }
-                }
-            );
-            console.log("Bank Verification Response:", response.data);
-            setBankStatus(response.data.status);
-        } catch (error) {
-            console.error("Bank Verification Error:", error.response?.data || error.message);
-            setBankStatus("Bank Verification Failed");
+    console.log("Bank Verification Clicked!");
+    try {
+        const response = await axios.post(
+            "http://localhost:8000/kyc/bank-account",
+            null,
+            {
+                params: { pan_no: pan }
+            }
+        );
+        console.log("Bank Verification Response:", response.data);
+
+        if (response.status === 200 ) {
+            setBankStatus("Bank verified successfully");
+        } else {
+            setBankStatus(response.data.status || "Bank Verification Failed");
         }
-    };
+    } catch (error) {
+        console.error("Bank Verification Error:", error.response?.data || error.message);
+        setBankStatus("Bank Verification Failed");
+    }
+};
 
     // Retry PAN Verification
     const retryPANVerification = () => {

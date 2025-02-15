@@ -88,7 +88,7 @@ const styles = {
     container: {
         textAlign: "center",
         marginTop: "50px",
-        padding: "20px",
+        padding: "150px",
         border: "1px solid #ccc",
         borderRadius: "10px",
         width: "80%",
