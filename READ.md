@@ -13,6 +13,18 @@ This project verifies the PAN number of the customer and make a reverse drop pen
 
 ## SetUP
 
+### Using Docker 
+### 1. Clone the Repository
+
+git clone <repo-url>
+cd <project-directory>
+
+### 2. Run docker Compose
+
+    'docker-compose up --build'
+
+### Without Docker
+
 ### 1. Clone the Repository
 
 git clone <repo-url>
