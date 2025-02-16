@@ -16,7 +16,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "${PGDATABASE}", "-U", "${PGUSER}" ]
+      test: [ "CMD", "pg_isready", "-q", "-d", "kyc_db", "-U", "user" ]
       timeout: 40s
       interval: 2s
       retries: 20
