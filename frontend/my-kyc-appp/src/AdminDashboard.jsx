@@ -8,7 +8,7 @@ const AdminDashboard = () => {
     // Fetch Analytics
     const getAnalytics = async () => {
         try {
-            const response = await axios.get("http://localhost:8000/kyc/get-statistics");
+            const response = await axios.get("http://fastapi_app/kyc/get-statistics");
             console.log("Analytics Data:", response.data);
             setAnalytics(response.data);
         } catch (error) {
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
     // Fetch All Data
     const getAllData = async () => {
         try {
-            const response = await axios.get("http://localhost:8000/kyc/get_all");
+            const response = await axios.get("http://fastapi_app:8000/kyc/get_all");
             console.log("All Data Response:", response.data);
             setAllData(response.data);
         } catch (error) {

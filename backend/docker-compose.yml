@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:15
     restart: always
-    container_name: postgres_db
+    container_name: db
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -13,23 +13,34 @@ services:
       - "5432:5432"
     networks:
       - my_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${PGDATABASE}", "-U", "${PGUSER}" ]
+      timeout: 40s
+      interval: 2s
+      retries: 20
 
   fastapi_app:
     build: .
     container_name: fastapi_app
     depends_on:
-      - db
+      db:
+          condition: service_healthy
     environment:
-      DATABASE_URL: "postgresql://user:password@postgres_db:5432/kyc_db"
+      DATABASE_URL: "postgresql://user:password@db:5432/kyc_db"
     command: >
       sh -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     ports:
       - "8000:8000"
     networks:
       - my_network
+
+
+
   frontend:
     build:
-      context: ../frontend  # Replace with the actual path to your frontend repo
+      context: ../frontend  # Make sure the path is correct
       dockerfile: Dockerfile
     container_name: frontend_app
     depends_on:
@@ -38,9 +49,16 @@ services:
       - "3000:3000"
     networks:
       - my_network
+    volumes:
+      - ../frontend/my-kyc-appp:/app  # Mount the correct folder
+      - /app/node_modules
 
 
 
 
 networks:
   my_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

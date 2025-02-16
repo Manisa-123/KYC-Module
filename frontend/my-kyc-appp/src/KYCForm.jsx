@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+const API_URL = 'http://0.0.0.0:8000';
 const KYCForm = () => {
     const [pan, setPan] = useState("");
     const [consent, setConsent] = useState(false);
@@ -23,13 +23,16 @@ const KYCForm = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8000/kyc/verify-pan",
+                `${API_URL}/kyc/verify-pan`,
                 null,
                 {
                     params: {
                         pan_no: pan,
                         consent: consent,
                         reason: reason
+                    },
+                    headers: {
+                        "Content-Type": "application/json"
                     }
                 }
             );
@@ -54,7 +57,7 @@ const KYCForm = () => {
     console.log("Bank Verification Clicked!");
     try {
         const response = await axios.post(
-            "http://localhost:8000/kyc/bank-account",
+            `${API_URL}/kyc/bank-account`,
             null,
             {
                 params: { pan_no: pan }
