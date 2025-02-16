@@ -29,7 +29,7 @@ def verify_pan(pan_no: str, consent: bool, reason: str, db: Session = Depends(ge
 
 
 @app.post("/kyc/bank-account")
-def verify_pan(db: Session = Depends(get_db), pan_no: str = None):
+def verify_account(db: Session = Depends(get_db), pan_no: str = None):
     response = service.verify_bank(db=db, pan_no=pan_no)
     return response
 

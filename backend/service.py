@@ -168,7 +168,6 @@ def verify_bank(pan_no: str, db: Session = Depends(get_db)):
     kyc_record = check_pan_exists_in_db(pan_no, db)
 
     if not kyc_record or kyc_record.pan_status != "Success":
-        print(kyc_record)
         print(kyc_record.pan_status)
         update_kyc_failure(stats, "PAN")
         db.commit()

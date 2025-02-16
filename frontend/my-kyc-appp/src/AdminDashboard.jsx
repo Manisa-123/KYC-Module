@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+const API_URL = 'http://0.0.0.0:8000';
+
 const AdminDashboard = () => {
-    const [analytics, setAnalytics] = useState(null);
-    const [allData, setAllData] = useState(null);
+    const [analytics, setAnalytics] = useState({});
+    const [allData, setAllData] = useState([]);
 
     // Fetch Analytics
     const getAnalytics = async () => {
         try {
-            const response = await axios.get("http://fastapi_app/kyc/get-statistics");
+            const response = await axios.get(`${API_URL}/kyc/get-statistics`);
             console.log("Analytics Data:", response.data);
-            setAnalytics(response.data);
+            setAnalytics(response.data || {});
         } catch (error) {
             console.error("Error fetching analytics:", error);
-            setAnalytics("Failed to fetch analytics");
+            setAnalytics({});
         }
     };
 
     // Fetch All Data
     const getAllData = async () => {
         try {
-            const response = await axios.get("http://fastapi_app:8000/kyc/get_all");
+            const response = await axios.get(`${API_URL}/kyc/get_all`);
             console.log("All Data Response:", response.data);
-            setAllData(response.data);
+            // Ensure the response is an array
+            setAllData(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error("Error fetching all data:", error);
-            setAllData("Failed to fetch all data");
+            setAllData([]);
         }
     };
 
@@ -39,7 +42,7 @@ const AdminDashboard = () => {
             <h2>Admin Dashboard</h2>
 
             {/* Analytics Section */}
-            {analytics && (
+            {Object.keys(analytics).length > 0 && (
                 <div style={styles.dataContainer}>
                     <h3>Analytics</h3>
                     <table style={styles.table}>
@@ -56,7 +59,7 @@ const AdminDashboard = () => {
             )}
 
             {/* All Data Section */}
-            {allData && (
+            {allData.length > 0 && (
                 <div style={styles.dataContainer}>
                     <h3>All Data</h3>
                     <table style={styles.table}>
