@@ -99,11 +99,17 @@ def verify_pan(
     response = requests.post("https://dg-sandbox.setu.co/api/verify/pan", headers=HEADERS, json=payload)
     response_data={}
     if response.status_code == 200:
-        response_data = response.json()
+        if response.text:  # Check if response is not empty
+            response_data = response.json()
+        else:
+            raise HTTPException(status_code=500, detail="Empty response from external API")
+
         if response_data.get("verification") == "SUCCESS":
             update_kyc_stats(db, successful=1)
             status = "Success"
             message = response_data.get("message", "Verification successful")
+        else:
+            message = response_data.get("message", "Verification failed")
     else:
         update_kyc_stats(db, failed=1, failed_pan=1)
         message = response_data.get("message", "Verification failed")
