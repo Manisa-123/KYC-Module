@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-const API_URL = 'http://0.0.0.0:8000';
+const API_URL = 'http://13.200.68.58:8000';
 const KYCForm = () => {
     const [pan, setPan] = useState("");
     const [consent, setConsent] = useState(false);
