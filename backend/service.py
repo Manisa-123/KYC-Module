@@ -97,14 +97,14 @@ def verify_pan(
         "reason": reason
     }
     response = requests.post("https://dg-sandbox.setu.co/api/verify/pan", headers=HEADERS, json=payload)
-    response_data = response.json()
-    print(response_data, response)
-    if response.status_code == 200 and response_data.get("verification") == "SUCCESS":
-        update_kyc_stats(db, successful=1)
-        status = "Success"
-        message = response_data.get("message", "Verification successful")
+    response_data={}
+    if response.status_code == 200:
+        response_data = response.json()
+        if response_data.get("verification") == "SUCCESS":
+            update_kyc_stats(db, successful=1)
+            status = "Success"
+            message = response_data.get("message", "Verification successful")
     else:
-        print("IInn Heeere")
         update_kyc_stats(db, failed=1, failed_pan=1)
         message = response_data.get("message", "Verification failed")
         raise HTTPException(status_code=400, detail=message)
