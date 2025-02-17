@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_URL = 'http://0.0.0.0:8000';
+const API_URL = 'http://13.200.68.58:8000';
 
 const AdminDashboard = () => {
     const [analytics, setAnalytics] = useState({});
