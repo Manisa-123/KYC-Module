@@ -116,6 +116,7 @@ def verify_pan(
             print(1,response.text)
             message = response_data.get("message", "Verification failed")
     else:
+	record.pan_status = 'Failed'
         print(2, response.text)
         update_kyc_stats(db, failed=1, failed_pan=1)
         message = response_data.get("message", "Verification failed")
