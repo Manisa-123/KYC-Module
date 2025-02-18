@@ -14,43 +14,45 @@ const KYCForm = () => {
 
     // PAN Verification
     const verifyPAN = async () => {
-        console.log("PAN Verification Clicked!");
-        if (reason.length < 20) {
-            setError("Reason must be at least 20 characters.");
-            return;
-        }
-        setError("");
+    console.log("PAN Verification Clicked!");
+    if (reason.length < 20) {
+        setError("Reason must be at least 20 characters.");
+        return;
+    }
+    setError("");
 
-        try {
-            const response = await axios.post(
-                `${API_URL}/kyc/verify-pan`,
-                null,
-                {
-                    params: {
-                        pan_no: pan,
-                        consent: consent,
-                        reason: reason
-                    },
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+    try {
+        const response = await axios.post(
+            `${API_URL}/kyc/verify-pan`,
+            null,
+            {
+                params: {
+                    pan_no: pan,
+                    consent: consent,
+                    reason: reason
+                },
+                headers: {
+                    "Content-Type": "application/json"
                 }
-            );
-            console.log("PAN Verification Response:", response.data);
-
-            if (response.status === 200 && response.data.status === "Success") {
-                setPanVerified(true);
-            } else {
-                setPanVerified(false);
             }
+        );
+        console.log("PAN Verification Response:", response.data);
 
-            setStatus(response.data.status || "Failed");
-        } catch (error) {
-            console.error("PAN Verification Error:", error.response?.data || error.message);
-            setStatus("PAN Verification Failed");
+        const { status, message } = response.data;
+
+        if (response.status === 200 && status === "Success") {
+            setPanVerified(true);
+            setStatus(`Success: ${message}`);
+        } else {
             setPanVerified(false);
+            setStatus(`Failed: ${message}`);
         }
-    };
+    } catch (error) {
+        console.error("PAN Verification Error:", error.response?.data || error.message);
+        setStatus("PAN Verification Failed: " + (error.response?.data?.message || "Unknown error"));
+        setPanVerified(false);
+    }
+};
 
     // Bank Verification
     const verifyBank = async () => {
