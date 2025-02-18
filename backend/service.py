@@ -76,6 +76,8 @@ def verify_pan(
 
     # Check if PAN already exists
     record = db.query(KYCRecord).filter(KYCRecord.pan == pan_no).first()
+    if record:
+        record.pan_creation_reason = reason
 
     if not record:
         record = KYCRecord(
@@ -88,7 +90,7 @@ def verify_pan(
         db.add(record)
         db.commit()
         db.refresh(record)
-
+	
     # API Call to verify PAN
 
     payload = {
@@ -110,6 +112,7 @@ def verify_pan(
             status = "Success"
             message = response_data.get("message", "Verification successful")
         else:
+	    status='Failed'
             print(1,response.text)
             message = response_data.get("message", "Verification failed")
     else:
