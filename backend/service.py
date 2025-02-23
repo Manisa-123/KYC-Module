@@ -226,18 +226,22 @@ def verify_bank(pan_no: str, account_name: str, account_no: str, ifsc_code: str,
     bank_account_name = bank_data.get("bankAccountName")
     if not bank_account or not ifsc:
         update_kyc_failure(stats, "BANK")
+        kyc_record.banK_verification_failure_reason='Missing bank account or IFSC details'
         db.commit()
         raise HTTPException(status_code=400, detail="Missing bank account or IFSC details")
     if account_no != bank_account:
         update_kyc_failure(stats, "BANK")
+        kyc_record.banK_verification_failure_reason='Invalid bank account number'
         db.commit()
         raise HTTPException(status_code=400, detail="Invalid bank account number")
     if ifsc_code and ifsc_code != ifsc:
         update_kyc_failure(stats, "BANK")
+        kyc_record.banK_verification_failure_reason='Invalid IFSC code'
         db.commit()
         raise HTTPException(status_code=400, detail="Invalid IFSC code")
     if account_name and account_name != bank_account_name:
         update_kyc_failure(stats, "BANK")
+        kyc_record.banK_verification_failure_reason='Invalid bank account name'
         db.commit()
         raise HTTPException(status_code=400, detail="Invalid bank account name")
 
