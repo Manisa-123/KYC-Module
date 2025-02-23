@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement } from 'chart.js';
-import Popup from "./popup"; // Corrected import path
+import Popup from "./popup";
 
 Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement);
 
@@ -13,7 +13,7 @@ const AdminDashboard = () => {
     const [allData, setAllData] = useState([]);
     const [filters, setFilters] = useState({});
     const [showFilters, setShowFilters] = useState(false);
-    const [popupData, setPopupData] = useState(null); // Use popupData to store data for the popup
+    const [popupData, setPopupData] = useState(null);
 
     const getAnalytics = async () => {
         try {
@@ -49,8 +49,9 @@ const AdminDashboard = () => {
         setShowFilters(!showFilters);
     };
 
-    const handleShowPopup = (data) => {
-        setPopupData(data);
+    const handleShowPopup = (row) => {
+        const { id, ...rest } = row;
+        setPopupData(rest);
     };
 
     const handleClosePopup = () => {
@@ -71,6 +72,28 @@ const AdminDashboard = () => {
             ],
             borderWidth: 1,
         }]
+    };
+
+    const pieOptions = {
+        plugins: {
+            legend: {
+                position: 'bottom', // Adjust legend position as needed
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed !== null) {
+                            label += context.parsed;
+                        }
+                        return label;
+                    }
+                }
+            }
+        }
     };
 
     return (
