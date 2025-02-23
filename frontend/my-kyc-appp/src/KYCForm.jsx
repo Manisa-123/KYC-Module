@@ -161,95 +161,98 @@ const KYCForm = () => {
     );
 };
 
-
 const styles = {
-    container: {
-        textAlign: "center",
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        padding: "40px",
-        border: "2px solid #e0e0e0",
-        borderRadius: "20px",
-        width: "550px",
-        boxShadow: "6px 6px 20px rgba(0,0,0,0.15)",
-        backgroundColor: "#fff8e1",
-    },
-    title: {
-        fontSize: "28px",
-        marginBottom: "25px",
-        color: "#3f51b5",
-    },
-    input: {
-        padding: "14px",
-        width: "90%",
-        margin: "12px 0",
-        borderRadius: "10px",
-        border: "1px solid #ccc",
-        fontSize: "18px",
-        backgroundColor: "#ffffff",
-        color: "#333",
-    },
-    consentLabel: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: "20px",
-        fontSize: "18px",
-        color: "#333",
-    },
-    consentCheckbox: {
-        marginRight: "10px",
-        transform: "scale(1.2)",
-    },
-    error: {
-        color: "#d32f2f",
-        marginBottom: "15px",
-        fontSize: "16px",
-    },
-    button: {
-        padding: "14px 25px",
-        backgroundColor: "#4caf50",
-        color: "white",
-        border: "none",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontSize: "18px",
-        marginTop: "20px",
-    },
-    status: {
-        marginTop: "20px",
-        fontSize: "18px",
-        color: "#2e7d32",
-    },
-    retryButton: {
-        padding: "12px 20px",
-        backgroundColor: "#f44336",
-        color: "white",
-        border: "none",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontSize: "16px",
-        marginTop: "15px",
-    },
-    bankVerification: {
-        marginTop: "30px",
-        padding: "25px",
-        border: "1px solid #e0e0e0",
-        borderRadius: "12px",
-        backgroundColor: "#f0f8ff",
-    },
-    bankTitle: {
-        fontSize: "22px",
-        marginBottom: "20px",
-        color: "#1976d2",
-    },
-    bankStatus: {
-        marginTop: "20px",
-        fontSize: "18px",
-        color: "#1565c0",
-    },
+  container: {
+    textAlign: "center",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    padding: "20px",
+    border: "1px solid #e0e0e0",
+    borderRadius: "10px",
+    width: "400px",
+    maxWidth: "90%",
+    boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#fff8e1",
+    marginTop: "30px", // Added top margin
+    marginBottom: "30px", // Added bottom margin
+  },
+  title: {
+    fontSize: "24px",
+    marginBottom: "20px",
+    color: "#3f51b5",
+  },
+  input: {
+    padding: "10px",
+    width: "90%",
+    margin: "10px 0",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    fontSize: "16px",
+    backgroundColor: "#ffffff",
+    color: "#333",
+  },
+  consentLabel: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "15px",
+    fontSize: "16px",
+    color: "#333",
+  },
+  consentCheckbox: {
+    marginRight: "8px",
+    transform: "scale(1.1)",
+  },
+  error: {
+    color: "#d32f2f",
+    marginBottom: "10px",
+    fontSize: "14px",
+  },
+  button: {
+    padding: "12px 20px",
+    backgroundColor: "#4caf50",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "16px",
+    marginTop: "15px",
+  },
+  status: {
+    marginTop: "15px",
+    fontSize: "16px",
+    color: "#2e7d32",
+  },
+  retryButton: {
+    padding: "10px 18px",
+    backgroundColor: "#f44336",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "14px",
+    marginTop: "12px",
+    display: "block", // Make it a block-level element
+    margin: "12px auto", // Center horizontally
+  },
+  bankVerification: {
+    marginTop: "20px",
+    padding: "20px",
+    border: "1px solid #e0e0e0",
+    borderRadius: "10px",
+    backgroundColor: "#f0f8ff",
+  },
+  bankTitle: {
+    fontSize: "20px",
+    marginBottom: "15px",
+    color: "#1976d2",
+  },
+  bankStatus: {
+    marginTop: "15px",
+    fontSize: "16px",
+    color: "#1565c0",
+  },
 };
-
 export default KYCForm;

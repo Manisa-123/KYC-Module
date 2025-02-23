@@ -158,12 +158,17 @@ def get_rpd_status(rpd_id):
     return response.json()
 
 
-def update_kyc_failure(stats, reason):
+def update_kyc_failure(stats, reason, record, db):
     stats.total_KYC_failed += 1
     if reason == "PAN":
         stats.total_KYC_failed_due_to_PAN += 1
     elif reason == "BANK":
         stats.total_KYC_failed_due_to_Bank_Account += 1
+        record.bank_status="Failed"
+        record.kyc_status="Failed"
+        db.add(record)
+        # db.commit()
+        # db.refresh(record)
 
 
 def verify_bank(pan_no: str, account_name: str, account_no: str, ifsc_code: str, db: Session = Depends(get_db)):
@@ -188,21 +193,21 @@ def verify_bank(pan_no: str, account_name: str, account_no: str, ifsc_code: str,
 
     if not kyc_record or kyc_record.pan_status != "Success":
         print(kyc_record.pan_status)
-        update_kyc_failure(stats, "PAN")
+        update_kyc_failure(stats, "PAN", kyc_record, db)
         db.commit()
         raise HTTPException(status_code=400, detail="Please Verify PAN number first")
     SETU_API_URL = 'https://dg-sandbox.setu.co/api/verify/ban/reverse'
     response = requests.post(SETU_API_URL, headers=headers)
     print(response)
     if response.status_code != 201:
-        update_kyc_failure(stats, "BANK")
+        update_kyc_failure(stats, "BANK",  kyc_record, db)
         db.commit()
         raise HTTPException(status_code=400, detail="Bank Verification API call failed")
 
     response_data = response.json()
     rdp_id = response_data.get("id")
     if not rdp_id:
-        update_kyc_failure(stats, "BANK")
+        update_kyc_failure(stats, "BANK", kyc_record, db)
         db.commit()
         raise HTTPException(status_code=400, detail="Invalid response from verification API")
 
@@ -211,12 +216,12 @@ def verify_bank(pan_no: str, account_name: str, account_no: str, ifsc_code: str,
     rpd_record = get_rpd_status(rdp_id)
 
     if not rpd_record or "status" not in rpd_record:
-        update_kyc_failure(stats, "BANK")
+        update_kyc_failure(stats, "BANK", kyc_record, db),
         db.commit()
         raise HTTPException(status_code=400, detail="Invalid RPD status response")
 
     if rpd_record["status"] != 'BAV_REVERSE_PENNY_DROP_PAYMENT_SUCCESSFUL':
-        update_kyc_failure(stats, "BANK")
+        update_kyc_failure(stats, "BANK",   kyc_record, db),
         db.commit()
         raise HTTPException(status_code=400, detail="Bank Verification Failed")
 
@@ -225,22 +230,22 @@ def verify_bank(pan_no: str, account_name: str, account_no: str, ifsc_code: str,
     ifsc = bank_data.get("bankAccountIfsc")
     bank_account_name = bank_data.get("bankAccountName")
     if not bank_account or not ifsc:
-        update_kyc_failure(stats, "BANK")
+        update_kyc_failure(stats, "BANK", kyc_record, db)
         kyc_record.banK_verification_failure_reason='Missing bank account or IFSC details'
         db.commit()
         raise HTTPException(status_code=400, detail="Missing bank account or IFSC details")
     if account_no != bank_account:
-        update_kyc_failure(stats, "BANK")
+        update_kyc_failure(stats, "BANK", kyc_record, db)
         kyc_record.banK_verification_failure_reason='Invalid bank account number'
         db.commit()
         raise HTTPException(status_code=400, detail="Invalid bank account number")
     if ifsc_code and ifsc_code != ifsc:
-        update_kyc_failure(stats, "BANK")
+        update_kyc_failure(stats, "BANK", kyc_record, db)
         kyc_record.banK_verification_failure_reason='Invalid IFSC code'
         db.commit()
         raise HTTPException(status_code=400, detail="Invalid IFSC code")
     if account_name and account_name != bank_account_name:
-        update_kyc_failure(stats, "BANK")
+        update_kyc_failure(stats, "BANK", kyc_record, db)
         kyc_record.banK_verification_failure_reason='Invalid bank account name'
         db.commit()
         raise HTTPException(status_code=400, detail="Invalid bank account name")
