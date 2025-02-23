@@ -179,10 +179,11 @@ const styles = {
     },
     gridContainer: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, 400px)',
-        gap: '20px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', // Adjust minmax as needed
+        gap: '10px',
         marginTop: '20px',
-        justifyContent: 'center',
+        justifyContent: 'stretch', // Use stretch to remove extra space
+        width: "100%", // Ensure the grid takes full width
     },
     dataCell: {
         border: '1px solid #e0e0e0',
