@@ -22,7 +22,7 @@ CMD ["sh", "-c", "alembic upgrade head && uvicorn backend.main:app --host 0.0.0.
 
 
 # Run FastAPI app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 COPY alembic alembic
 COPY alembic.ini alembic.ini

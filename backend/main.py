@@ -3,7 +3,7 @@ from pydantic import Field
 from sqlalchemy.orm import Session
 import requests
 from datetime import datetime
-
+from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import SessionLocal, engine, Base
@@ -29,8 +29,8 @@ def verify_pan(pan_no: str, consent: bool, reason: str, db: Session = Depends(ge
 
 
 @app.post("/kyc/bank-account")
-def verify_account(db: Session = Depends(get_db), pan_no: str = None):
-    response = service.verify_bank(db=db, pan_no=pan_no)
+def verify_account( pan_no: str,account_no: str, bank_account_name: str=None, ifsc_code: str=None,  db: Session = Depends(get_db)):
+    response = service.verify_bank(db=db, pan_no=pan_no, account_name=bank_account_name, ifsc_code=ifsc_code, account_no=account_no)
     return response
 
 
@@ -42,8 +42,25 @@ def get_statistics(db: Session = Depends(get_db)):
 
 
 @app.get("/kyc/get_all")
-def get_statistics(db: Session = Depends(get_db)):
-    response = service.get_all_data(db=db)
+def get_statistics(db: Session = Depends(get_db),
+    pan: Optional[str] = None,
+    pan_status: Optional[str] = None,
+    bank_account_number: Optional[str] = None,
+    ifsc_code: Optional[str] = None,
+    bank_status: Optional[str] = None,
+    kyc_status: Optional[str] = None,
+    bank_account_name: Optional[str] = None,
+    ):
+    response = service.get_all_data(db=db,
+                                    pan=pan,
+    pan_status=pan_status,
+    bank_account_number=bank_account_number,
+    ifsc=ifsc_code,
+    bank_status=bank_status,
+    kyc_status=kyc_status,
+    bank_account_name=bank_account_name,
+
+                                    )
     return response
 
 app.add_middleware(

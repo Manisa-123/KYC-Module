@@ -3,14 +3,14 @@ import time
 import managers
 
 from managers import  check_pan_exists_in_db
-
-from fastapi import Depends, HTTPException
+from typing import Optional
+from fastapi import Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
 import requests
 from models import KYCStatistics, KYCRecord
 from managers import get_db
-
+from sqlalchemy import and_
 
 
 HEADERS = {
@@ -166,7 +166,7 @@ def update_kyc_failure(stats, reason):
         stats.total_KYC_failed_due_to_Bank_Account += 1
 
 
-def verify_bank(pan_no: str, db: Session = Depends(get_db)):
+def verify_bank(pan_no: str, account_name: str, account_no: str, ifsc_code: str, db: Session = Depends(get_db)):
     """
     Verifies the bank details using the provided PAN number.
     Fetches RPD status and updates KYCRecord in the database.
@@ -179,6 +179,12 @@ def verify_bank(pan_no: str, db: Session = Depends(get_db)):
     }
     stats = db.query(KYCStatistics).first()
     kyc_record = check_pan_exists_in_db(pan_no, db)
+
+    kyc_record.bank_account_number=account_no
+    kyc_record.bank_account_name=account_name
+    kyc_record.ifsc_code=ifsc_code
+    db.commit()
+    print(kyc_record.bank_account_number)
 
     if not kyc_record or kyc_record.pan_status != "Success":
         print(kyc_record.pan_status)
@@ -218,18 +224,30 @@ def verify_bank(pan_no: str, db: Session = Depends(get_db)):
     bank_account = bank_data.get("bankAccountNumber")
     ifsc = bank_data.get("bankAccountIfsc")
     bank_account_name = bank_data.get("bankAccountName")
-
     if not bank_account or not ifsc:
         update_kyc_failure(stats, "BANK")
         db.commit()
         raise HTTPException(status_code=400, detail="Missing bank account or IFSC details")
+    if account_no != bank_account:
+        update_kyc_failure(stats, "BANK")
+        db.commit()
+        raise HTTPException(status_code=400, detail="Invalid bank account number")
+    if ifsc_code and ifsc_code != ifsc:
+        update_kyc_failure(stats, "BANK")
+        db.commit()
+        raise HTTPException(status_code=400, detail="Invalid IFSC code")
+    if account_name and account_name != bank_account_name:
+        update_kyc_failure(stats, "BANK")
+        db.commit()
+        raise HTTPException(status_code=400, detail="Invalid bank account name")
+
 
     kyc_record.bank_status = "verified"
     kyc_record.created_at = datetime.utcnow()
     kyc_record.bank_account_number = bank_account
     kyc_record.ifsc = ifsc
     kyc_record.kyc_status = "Confirmed"
-    kyc_record.bank_account_name = bank_account_name
+    kyc_record.bank_account_name = account_name
 
     stats.total_KYC_successful += 1
     db.add(stats)
@@ -244,6 +262,38 @@ def get_kyc_statistics(db: Session = Depends(get_db)):
     stats = db.query(KYCStatistics).first()
     return stats
 
-def get_all_data(db: Session = Depends(get_db)):
-    records = db.query(KYCRecord).all()
+def get_all_data(
+    db: Session = Depends(get_db),
+    pan: Optional[str] = Query(None),
+    pan_status: Optional[str] = Query(None),
+    bank_account_number: Optional[str] = Query(None),
+    ifsc: Optional[str] = Query(None),
+    bank_status: Optional[str] = Query(None),
+    kyc_status: Optional[str] = Query(None),
+    bank_account_name: Optional[str] = Query(None),
+
+):
+    query = db.query(KYCRecord)
+    filters = []
+
+    if pan is not None:
+        filters.append(KYCRecord.pan == pan)
+    if pan_status is not None:
+        filters.append(KYCRecord.pan_status == pan_status)
+    if bank_account_number is not None:
+        filters.append(KYCRecord.bank_account_number == bank_account_number)
+    if ifsc is not None:
+        filters.append(KYCRecord.ifsc == ifsc)
+    if bank_status is not None:
+        filters.append(KYCRecord.bank_status == bank_status)
+    if kyc_status is not None:
+        filters.append(KYCRecord.kyc_status == kyc_status)
+    if bank_account_name is not None:
+        filters.append(KYCRecord.bank_account_name == bank_account_name)
+
+
+    if filters:
+        query = query.filter(and_(*filters))
+
+    records = query.all()
     return records
