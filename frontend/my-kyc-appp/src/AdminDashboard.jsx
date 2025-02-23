@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement } from 'chart.js';
-import Popup from "./Popup"; // Corrected import path
+import Popup from "./popup"; // Corrected import path
 
 Chart.register(ArcElement, Legend, Tooltip, CategoryScale, LinearScale, BarElement);
 
