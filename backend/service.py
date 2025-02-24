@@ -269,7 +269,18 @@ def verify_bank(pan_no: str, account_name: str, account_no: str, ifsc_code: str,
 
 def get_kyc_statistics(db: Session = Depends(get_db)):
     stats = db.query(KYCStatistics).first()
-    return stats
+    if stats:
+        stats_dict = {
+            "total_KYC_attempted": stats.total_KYC_attempted,
+            "total_KYC_successful": stats.total_KYC_successful,
+            "total_KYC_failed": stats.total_KYC_failed,
+            "total_KYC_failed_due_to_PAN": stats.total_KYC_failed_due_to_PAN,
+            "total_KYC_failed_due_to_Bank_Account": stats.total_KYC_failed_due_to_Bank_Account,
+            "total_KYC_failed_due_to_PAN_and_Bank_Account": stats.total_KYC_failed_due_to_PAN_and_Bank_Account,
+        }
+        return stats_dict
+    else:
+        return {}
 
 def get_all_data(
     db: Session = Depends(get_db),
