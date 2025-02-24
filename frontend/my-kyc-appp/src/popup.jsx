@@ -32,7 +32,7 @@ Popup.propTypes = {
 
 const formatKey = (key) => {
   switch (key) {
-    case 'pan_no':
+    case 'pan':
       return 'PAN Number';
     case 'pan_status':
       return 'PAN Status';
@@ -48,6 +48,12 @@ const formatKey = (key) => {
       return 'Bank Status';
     case 'created_at':
       return 'Created At';
+    case 'pan_verification_failure_reason':
+      return 'PAN Verification Failure Reason';
+    case 'banK_verification_failure_reason':
+      return 'Bank Verification Failure Reason';
+    case 'pan_creation_reason':
+      return 'PAN Creation Reason';
     default:
       return key;
   }

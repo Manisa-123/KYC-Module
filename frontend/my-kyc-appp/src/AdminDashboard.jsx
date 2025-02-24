@@ -42,9 +42,15 @@ const AdminDashboard = () => {
     }, [filters]);
 
     const handleFilterChange = (e) => {
-        setFilters({ ...filters, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        if (value) {
+            setFilters({ ...filters, [name]: value });
+        } else {
+            const newFilters = { ...filters };
+            delete newFilters[name]; // Remove filter key if value is empty
+            setFilters(newFilters);
+        }
     };
-
     const toggleFilters = () => {
         setShowFilters(!showFilters);
     };
