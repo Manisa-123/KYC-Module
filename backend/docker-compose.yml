@@ -40,7 +40,7 @@ services:
 
   frontend:
     build:
-      context: ../frontend  # Make sure the path is correct
+      context: ../frontend
       dockerfile: Dockerfile
     container_name: frontend_app
     depends_on:
@@ -50,7 +50,7 @@ services:
     networks:
       - my_network
     volumes:
-      - ../frontend/my-kyc-appp:/app  # Mount the correct folder
+      - ../frontend/my-kyc-appp:/app
       - /app/node_modules
 
 

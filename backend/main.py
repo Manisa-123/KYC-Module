@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
-
+from managers import get_db
 from database import SessionLocal, engine, Base
 from models import KYCRecord
 import service
@@ -14,12 +14,6 @@ app = FastAPI()
 Base.metadata.create_all(bind=engine)
 
 # Dependency to get the database session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @app.post("/kyc/verify-pan")
